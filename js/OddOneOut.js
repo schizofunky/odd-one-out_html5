@@ -13,7 +13,7 @@ function init(){
 	soundManager.addSound("sounds/wrong");
 
 	//specify all of the images we want the asset manager to load
-	assetManager.addFileToLoad("img/Logo.jpg");
+	assetManager.addFileToLoad("img/Logo.png");
 	assetManager.addFileToLoad("img/ButtonOrange.jpg");
 	assetManager.addFileToLoad("img/ButtonPurple.jpg");
 	assetManager.addFileToLoad("img/PlayGameTxtOrange.png");
