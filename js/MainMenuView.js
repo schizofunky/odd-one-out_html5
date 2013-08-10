@@ -7,9 +7,6 @@ function MainMenuView(){
 	ctx.drawImage(assetManager.getAsset("img/GameFrame.png"),0,0);				
 	animationProgress = 0;
 	setTimeout(animateIntro,1);
-
-	//add s controller for the images to act as a button and react to roll overs and clicks
-	OneButtonView("PlayGameTxt",onPlayClick);
 }
 
 function onPlayClick(event){
@@ -39,5 +36,10 @@ function animateIntro(){
 	{
 		animationProgress += 5;
 		setTimeout(animateIntro,1);	
+	}
+	else
+	{
+		//add s controller for the images to act as a button and react to roll overs and clicks
+		OneButtonView("PlayGameTxt",onPlayClick);
 	}
 }

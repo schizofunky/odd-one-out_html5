@@ -1,16 +1,17 @@
 
-var correctImageCoordinates, timeLimit, currentScore, hud, difficultyManager,oddImageId,levelCoordinates,currentRobotId,oddAsset;
+var correctImageCoordinates, timeLimit, currentScore, hud, difficultyManager,oddImageId,levelCoordinates,currentRobotId,oddAsset,lives;
 
 function LevelView(){
 	soundManager.playMusic("sounds/bgm");
 	timeLimit = 100;
 	currentScore = 0;
+	lives = 5;
 	difficultyManager = new DifficultyManager();
 	createLevel();
 	setTimeout(updateTimer, 100);
 	c.onmousedown = onGameClick;
-	hud = new HUDView();
-	hud.updateHUD(currentScore,timeLimit);
+	hud = new HUDView(lives);
+	hud.updateHUD(currentScore,timeLimit,lives);
 }
 /*
 	Redraws the level togetehr with the robots.  Also updates the current difficulty based on score
@@ -88,7 +89,7 @@ function onGameClick(event){
 
 			soundManager.mute();
 			muteClicked = true;
-			hud.updateHUD(currentScore,timeLimit);
+			hud.updateHUD(currentScore,timeLimit,lives);
 		}
 	}
 	if(!muteClicked){
@@ -104,12 +105,12 @@ function onGameClick(event){
 		}
 		else{
 			soundManager.playSound("sounds/wrong");
-			if(currentScore > 0){
-				currentScore -= 100;
-			}	
+			lives-= 1;	
 		}
-		hud.updateHUD(currentScore,timeLimit);
-		createLevel();
+		hud.updateHUD(currentScore,timeLimit,lives);
+		if(lives > 0){
+			createLevel();
+		}
 	}
 
 }
@@ -118,12 +119,19 @@ function onGameClick(event){
 	Reduces the level timer, updates the HUD and checks if it's game over
 */
 function updateTimer(){
-	timeLimit -= difficultyManager.getTimeDecaySpeed();
-	if(timeLimit > -difficultyManager.getTimeDecaySpeed()){
-		hud.updateHUD(currentScore,timeLimit);
-		setTimeout(updateTimer, 100);
+	if(lives < 1){
+		switchView("GameOver");
 	}
 	else{
-		switchView("GameOver");
+		timeLimit -= difficultyManager.getTimeDecaySpeed();
+		if(timeLimit <= -difficultyManager.getTimeDecaySpeed()){
+			soundManager.playSound("sounds/wrong");
+			lives -= 1;		
+			if(lives > 0){				
+				createLevel();
+			}	
+		}
+		setTimeout(updateTimer, 100);
+		hud.updateHUD(currentScore,timeLimit,lives);	
 	}
 }

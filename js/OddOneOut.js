@@ -26,6 +26,7 @@ function init(){
 	assetManager.addFileToLoad("img/MuteOff.png");
 	assetManager.addFileToLoad("img/MuteOn.png");
 	assetManager.addFileToLoad("img/GameOverScreen.png");
+	assetManager.addFileToLoad("img/Life.png");
 
 	//all of the robot assets use the same naming structure allowing more to be added just by chnaging the counter value
 	for(var robotCounter = 1; robotCounter <= numberOfRobots; robotCounter++)

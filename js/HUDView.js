@@ -1,10 +1,19 @@
-function HUDView(){
+function HUDView(lives){
+	//initialise animation counters for each life
+	this.lifeAnimations = [];
+	for (var i = 0; i < lives; i++){
+		this.lifeAnimations.push(1);
+	}
 }
 
-HUDView.prototype.updateHUD = function(score,time){
+HUDView.prototype.updateHUD = function(score,time,lives){
 
 	ctx.drawImage(assetManager.getAsset("img/GameFrame.png"),0,0);
 	ctx.drawImage(assetManager.getAsset("img/Mute"+soundManager.getMuteStatus()+".png"),785,-12);
+	
+	//redraw the players lives
+	this.drawLives(lives);
+	
 	//Update the number of points obtained
 	this.updateScore(score);
 
@@ -28,4 +37,16 @@ HUDView.prototype.drawTimerBar = function(time){
 	ctx.fillStyle="#00FF00";
 	//create a rectangle with width based on the time elapsed
 	ctx.fillRect(160,28,6.2*time,24);
+}
+
+HUDView.prototype.drawLives = function(lives){
+	for (var i = 0; i < this.lifeAnimations.length; i++)	{
+		if(lives - 1< i){
+			//if the player has less lives than they started with, animate them out
+			this.lifeAnimations[i] -= 0.2;
+		}
+		ctx.globalAlpha = Math.max(this.lifeAnimations[i],0);
+		ctx.drawImage(assetManager.getAsset("img/Life.png"),790,500-(60*i));
+		ctx.globalAlpha = 1;
+	}
 }
