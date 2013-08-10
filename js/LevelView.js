@@ -17,11 +17,10 @@ function LevelView(){
 */
 function createLevel(){
 	timeLimit = 100;
-	difficultyManager.updateDifficulty(currentScore);//TODO: only update on success?
 	currentRobotId = 1+Math.round(Math.random()*(numberOfRobots-1));
 	levelCoordinates = difficultyManager.getLevelCoordinates();
 	oddImageId = Math.round(Math.random()*(levelCoordinates.length-1));
-	oddAsset = getOddAsset();
+	oddAsset = difficultyManager.getOddAsset(currentRobotId);
 	animationEffect = 0;
 	animatedDraw();
 }
@@ -71,15 +70,6 @@ function animatedDraw()
 }
 
 /*
-	Randomly chooses which of the odd images to use.
-	TODO:  Move to difficulty manager?
-*/
-function getOddAsset(){
-	var oddAssets = ["img/Robot"+currentRobotId+"BadEasy.jpg","img/Robot"+currentRobotId+"BadMedium.jpg","img/Robot"+currentRobotId+"BadHard.jpg"];
-	return assetManager.getAsset(oddAssets[Math.round(Math.random()*2)]);
-}
-
-/*
 	The only input handler of the level, responds to the users click be it correct or incorrect
 */
 function onGameClick(event){
@@ -96,6 +86,7 @@ function onGameClick(event){
 	if(success){
 		soundManager.playSound("sounds/correct");
 		currentScore += 100;
+		difficultyManager.updateDifficulty(currentScore);//Updates the difficulty of the game
 	}
 	else{
 		soundManager.playSound("sounds/wrong");
