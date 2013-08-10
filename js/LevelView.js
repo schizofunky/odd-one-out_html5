@@ -1,5 +1,5 @@
 
-var correctImageCoordinates, timeLimit, currentScore, hud, difficultyManager;
+var correctImageCoordinates, timeLimit, currentScore, hud, difficultyManager,oddImageId,levelCoordinates,currentRobotId,oddAsset;
 
 function LevelView(){
 	soundManager.playMusic("sounds/bgm");
@@ -20,20 +20,39 @@ function createLevel(){
 	difficultyManager.updateDifficulty(currentScore);//TODO: only update on success?
 	currentRobotId = 1+Math.round(Math.random()*(numberOfRobots-1));
 	levelCoordinates = difficultyManager.getLevelCoordinates();
+	oddImageId = Math.round(Math.random()*(levelCoordinates.length-1));
+	oddAsset = getOddAsset();
+	currentAlpha = 0;
+	drawWithAlpha();
+	// var numberOfImages = levelCoordinates.length;
+	// var coordinates;
+	// ctx.clearRect(80,100,690,440);
+	// for(var i = 0; i < numberOfImages; i++){
+	// 	coordinates = levelCoordinates[i];
+	// 	if(i == oddImageId){
+	// 		correctImageCoordinates = coordinates;
+	// 		drawImage(getOddAsset(),correctImageCoordinates[0],correctImageCoordinates[1]);
+	// 	}
+	// 	else{
+	// 		drawImage(assetManager.getAsset("img/Robot"+currentRobotId+"Good.jpg"),coordinates[0],coordinates[1]);
+	// 	}
+	// }
+}
+
+function redrawImages(){
 	var numberOfImages = levelCoordinates.length;
 	var coordinates;
 	ctx.clearRect(80,100,690,440);
-	var oddImageId = Math.round(Math.random()*(levelCoordinates.length-1));
 	for(var i = 0; i < numberOfImages; i++){
 		coordinates = levelCoordinates[i];
 		if(i == oddImageId){
 			correctImageCoordinates = coordinates;
-			drawImage(getOddAsset(),correctImageCoordinates[0],correctImageCoordinates[1]);
+			drawImage(oddAsset,correctImageCoordinates[0],correctImageCoordinates[1]);
 		}
 		else{
 			drawImage(assetManager.getAsset("img/Robot"+currentRobotId+"Good.jpg"),coordinates[0],coordinates[1]);
 		}
-	}
+	}	
 }
 
 /*
@@ -45,11 +64,23 @@ function drawImage(imageToDraw,imageX,imageY){
 	var imageRotation = difficultyManager.canImagesRotate()? Math.random()*6.28 : 0;
 	imageX = imageX + halfWidth;
 	imageY = imageY + halfHeight;
+	ctx.globalAlpha = currentAlpha;
 	ctx.translate(imageX,imageY);
 	ctx.rotate(imageRotation);
 	ctx.drawImage(imageToDraw,-halfWidth,-halfHeight);	
 	ctx.rotate(-imageRotation);
 	ctx.translate(-imageX,-imageY);
+	ctx.globalAlpha = 1;
+}
+
+function drawWithAlpha()
+{
+	currentAlpha += 0.1;
+	redrawImages();
+	if(currentAlpha <= 1)
+	{
+		setTimeout(drawWithAlpha,10);
+	}
 }
 
 /*
