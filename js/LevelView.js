@@ -22,21 +22,8 @@ function createLevel(){
 	levelCoordinates = difficultyManager.getLevelCoordinates();
 	oddImageId = Math.round(Math.random()*(levelCoordinates.length-1));
 	oddAsset = getOddAsset();
-	currentAlpha = 0;
-	drawWithAlpha();
-	// var numberOfImages = levelCoordinates.length;
-	// var coordinates;
-	// ctx.clearRect(80,100,690,440);
-	// for(var i = 0; i < numberOfImages; i++){
-	// 	coordinates = levelCoordinates[i];
-	// 	if(i == oddImageId){
-	// 		correctImageCoordinates = coordinates;
-	// 		drawImage(getOddAsset(),correctImageCoordinates[0],correctImageCoordinates[1]);
-	// 	}
-	// 	else{
-	// 		drawImage(assetManager.getAsset("img/Robot"+currentRobotId+"Good.jpg"),coordinates[0],coordinates[1]);
-	// 	}
-	// }
+	animationEffect = 0;
+	animatedDraw();
 }
 
 function redrawImages(){
@@ -59,27 +46,27 @@ function redrawImages(){
 	Draws the image, and applies trandlations and rotations where necessary
 */
 function drawImage(imageToDraw,imageX,imageY){
-	var halfWidth = imageToDraw.width/2;
-	var halfHeight = imageToDraw.height/2;
+	var drawWidth = imageToDraw.width*animationEffect/2;
+	var drawHeight = imageToDraw.height*animationEffect/2;
 	var imageRotation = difficultyManager.canImagesRotate()? Math.random()*6.28 : 0;
-	imageX = imageX + halfWidth;
-	imageY = imageY + halfHeight;
-	ctx.globalAlpha = currentAlpha;
+	imageX = imageX + imageToDraw.width/2;
+	imageY = imageY + imageToDraw.height/2;
+	ctx.globalAlpha = animationEffect;
 	ctx.translate(imageX,imageY);
 	ctx.rotate(imageRotation);
-	ctx.drawImage(imageToDraw,-halfWidth,-halfHeight);	
+	ctx.drawImage(imageToDraw,-drawWidth,-drawHeight,2*drawWidth,2*drawHeight);	
 	ctx.rotate(-imageRotation);
 	ctx.translate(-imageX,-imageY);
 	ctx.globalAlpha = 1;
 }
 
-function drawWithAlpha()
+function animatedDraw()
 {
-	currentAlpha += 0.1;
+	animationEffect += 0.1;
 	redrawImages();
-	if(currentAlpha <= 1)
+	if(animationEffect <= 1)
 	{
-		setTimeout(drawWithAlpha,10);
+		setTimeout(animatedDraw,10);
 	}
 }
 
@@ -112,7 +99,9 @@ function onGameClick(event){
 	}
 	else{
 		soundManager.playSound("sounds/wrong");
-		currentScore -= 100;	
+		if(currentScore > 0){
+			currentScore -= 100;
+		}	
 	}
 
 	hud.updateHUD(currentScore,timeLimit);
