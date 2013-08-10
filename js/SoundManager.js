@@ -33,6 +33,14 @@ SoundManager.prototype.playMusic = function(soundFile) {
 	this.music.volume = this.muted ? 0 : 1;		
 }
 
+SoundManager.prototype.stopMusic = function(){
+	if(this.music)
+	{
+		this.music.pause();
+		this.music.currentTime = 0;
+	}	
+}
+
 SoundManager.prototype.mute = function(){
 	this.muted = !this.muted;
 	if(this.music)
