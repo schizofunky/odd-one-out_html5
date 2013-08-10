@@ -28,7 +28,7 @@ function createLevel(){
 function redrawImages(){
 	var numberOfImages = levelCoordinates.length;
 	var coordinates;
-	ctx.clearRect(80,100,690,440);
+	ctx.clearRect(80,80,700,462);
 	for(var i = 0; i < numberOfImages; i++){
 		coordinates = levelCoordinates[i];
 		if(i == oddImageId){

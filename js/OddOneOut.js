@@ -5,8 +5,6 @@ const numberOfRobots = 3;
 
 function init(){
 
-	//soundManager.mute();
-
 	//load all of the sounds for the game
 	soundManager.addSound("sounds/bgm");
 	soundManager.addSound("sounds/button-click");
@@ -39,7 +37,7 @@ function init(){
 	}	
 
 	//load all of the assets and call 'switchView' when complete
-	assetManager.downloadAssets(switchView,function(){});
+	assetManager.downloadAssets(onLoadComplete,updateLoadProgress);
 }
 
 //flips between the different view states of the game
@@ -54,12 +52,27 @@ function switchView(viewId){
 			break;
 		default:
 			MainMenuView();
-
 	}	
 }
 
-function drawMuteButton(){
+function onLoadComplete(){
+	ctx.fillStyle="#00CCFF";
+	ctx.fillRect(0,0,850,600);
+	switchView();
+}
 
+function updateLoadProgress(loadProgress){
+	ctx.fillStyle="#00CCFF";
+	ctx.fillRect(275,280,300,18);
+	ctx.strokeStyle = "black";
+	ctx.strokeRect(275,280,300,18);	
+	//set the color of the progress bar we are going to draw
+	ctx.fillStyle="#FFFFFF";
+	//create a rectangle with width based on the progress loaded
+	ctx.fillRect(275,280,3*loadProgress,18);
+	ctx.fillStyle="#000000";
+	ctx.font="18px Arial";
+	ctx.fillText("loading",390,294);
 }
 
 //call the init function to setup the game

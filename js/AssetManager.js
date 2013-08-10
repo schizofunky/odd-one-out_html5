@@ -23,13 +23,17 @@ AssetManager.prototype.downloadAssets = function(onAllAssetsDownloaded,onDownloa
 		var that = this;
 		img.addEventListener("load", function(){
 			that.successCount+= 1;
-			if(that.isDownloadComplete()){
+			that.percentDownloaded = that.calculatePercentDownloaded();
+			onDownloadProgress(that.percentDownloaded);
+			if(that.percentDownloaded == 100){
 				onAllAssetsDownloaded();
 			}
 		},false);
 		img.addEventListener("error", function(){
 			that.errorCount+= 1;
-			if(that.isDownloadComplete()){
+			that.percentDownloaded = that.calculatePercentDownloaded();
+			onDownloadProgress(that.percentDownloaded);
+			if(that.percentDownloaded == 100){
 				onAllAssetsDownloaded();
 			}
 		},false);
@@ -37,7 +41,6 @@ AssetManager.prototype.downloadAssets = function(onAllAssetsDownloaded,onDownloa
 		this.assetDictionary[path] = img;
 	}
 }
-
-AssetManager.prototype.isDownloadComplete = function(){
-	return (this.assetsToLoad.length == this.successCount + this.errorCount);
+AssetManager.prototype.calculatePercentDownloaded = function(){
+	return 100 * (this.successCount + this.errorCount)/this.assetsToLoad.length;
 }
