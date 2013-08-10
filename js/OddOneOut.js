@@ -23,6 +23,10 @@ function init(){
 	assetManager.addFileToLoad("img/MainMenuTxtOrange.png");
 	assetManager.addFileToLoad("img/MainMenuTxtPurple.png");
 	assetManager.addFileToLoad("img/GameFrame.png");
+	assetManager.addFileToLoad("img/TimeBar.png");
+	assetManager.addFileToLoad("img/ScoreBar.png");
+	assetManager.addFileToLoad("img/MuteOff.png");
+	assetManager.addFileToLoad("img/MuteOn.png");
 	assetManager.addFileToLoad("img/GameOverScreen.png");
 
 	//all of the robot assets use the same naming structure allowing more to be added just by chnaging the counter value
@@ -52,6 +56,10 @@ function switchView(viewId){
 			MainMenuView();
 
 	}	
+}
+
+function drawMuteButton(){
+
 }
 
 //call the init function to setup the game

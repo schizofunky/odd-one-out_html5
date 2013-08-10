@@ -8,6 +8,7 @@ function OneButtonView(buttonId, onClickCallback){
 	//sets up the liteners for when the mouse moves and is clicked
 	c.onmousedown = onMouseClick;	
 	c.onmousemove = onMouseMove;
+	ctx.drawImage(assetManager.getAsset("img/Mute"+soundManager.getMuteStatus()+".png"),785,-12);
 }
 
 
@@ -18,13 +19,15 @@ function onMouseMove(event){
 	var correctY = 400;
 	var correctWidth = 200;
 	var correctHeight = 120;
+	var mouseX = event.offsetX? event.offsetX : event.layerX;
+	var mouseY = event.offsetY? event.offsetY : event.layerY;
 
 	//a flag representing if the mouse is currently over the button
 	var currentlyOver = false;
 
 	//classic rectangular collision detection
-	if(event.clientX  >= correctX && event.clientX <= correctX+correctWidth){
-		if(event.clientY >= correctY && event.clientY <= correctY + correctHeight){
+	if(mouseX >= correctX && mouseX <= correctX+correctWidth){
+		if(mouseY >= correctY && mouseY <= correctY + correctHeight){
 			currentlyOver = true;
 		}
 	}
@@ -51,7 +54,7 @@ function onMouseMove(event){
 	}
 }
 
-function onMouseClick(){
+function onMouseClick(event){
 	//check that the mouse is being clicked whilst hovering over the button
 	if(overButton){
 		//play a nice sfx for feedback
@@ -63,5 +66,17 @@ function onMouseClick(){
 
 		//perform the callback function to whatever initiated this 
 		clickCallback();
+	}
+	else{
+		var mouseX = event.offsetX? event.offsetX : event.layerX;
+		var mouseY = event.offsetY? event.offsetY : event.layerY;
+		if(mouseX >= 785 && mouseX <= 785+50){
+		if(mouseY >= -12 && mouseY <= -12 + 40){
+
+			soundManager.mute();
+			ctx.drawImage(assetManager.getAsset("img/GameFrame.png"),0,0);
+			ctx.drawImage(assetManager.getAsset("img/Mute"+soundManager.getMuteStatus()+".png"),785,-12);
+		}
+	}
 	}
 }

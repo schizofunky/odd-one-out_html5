@@ -25,16 +25,22 @@ SoundManager.prototype.playSound = function(soundFile) {
 }
 
 SoundManager.prototype.playMusic = function(soundFile) {
-	if(!this.muted)
-	{
-		var snd = this.soundDictionary[soundFile];
-		snd.loop = true;
-		snd.pause();
-		snd.currentTime = 0;
-		snd.play();
-	}
+	this.music = this.soundDictionary[soundFile];
+	this.music.loop = true;
+	this.music.pause();
+	this.music.currentTime = 0;
+	this.music.play();
+	this.music.volume = this.muted ? 0 : 1;		
 }
 
 SoundManager.prototype.mute = function(){
-	this.muted = true;
+	this.muted = !this.muted;
+	if(this.music)
+	{
+		this.music.volume = this.muted ? 0 : 1;	
+	}
+}
+
+SoundManager.prototype.getMuteStatus = function(){
+	return this.muted ? "On" : "Off";
 }

@@ -78,25 +78,40 @@ function onGameClick(event){
 	var correctWidth = 100;
 	var correctHeight = 100;
 	var success = false;
-	if(event.clientX  >= correctX && event.clientX <= correctX+correctWidth){
-		if(event.clientY >= correctY && event.clientY <= correctY + correctHeight){
-			success = true;
+
+	var mouseX = event.offsetX? event.offsetX : event.layerX;
+	var mouseY = event.offsetY? event.offsetY : event.layerY;
+
+	var muteClicked = false;
+	if(mouseX >= 785 && mouseX <= 785+50){
+		if(mouseY >= -12 && mouseY <= -12 + 40){
+
+			soundManager.mute();
+			muteClicked = true;
+			hud.updateHUD(currentScore,timeLimit);
 		}
 	}
-	if(success){
-		soundManager.playSound("sounds/correct");
-		currentScore += 100;
-		difficultyManager.updateDifficulty(currentScore);//Updates the difficulty of the game
-	}
-	else{
-		soundManager.playSound("sounds/wrong");
-		if(currentScore > 0){
-			currentScore -= 100;
-		}	
+	if(!muteClicked){
+		if(mouseX  >= correctX && mouseX <= correctX+correctWidth){
+			if(mouseY >= correctY && mouseY <= correctY + correctHeight){
+				success = true;
+			}
+		}
+		if(success){
+			soundManager.playSound("sounds/correct");
+			currentScore += 100;
+			difficultyManager.updateDifficulty(currentScore);//Updates the difficulty of the game
+		}
+		else{
+			soundManager.playSound("sounds/wrong");
+			if(currentScore > 0){
+				currentScore -= 100;
+			}	
+		}
+		hud.updateHUD(currentScore,timeLimit);
+		createLevel();
 	}
 
-	hud.updateHUD(currentScore,timeLimit);
-	createLevel();
 }
 
 /*
