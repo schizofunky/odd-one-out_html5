@@ -37,4 +37,12 @@ function animateGameOverScreen(){
 		animationProgress += 2;
 		setTimeout(animateGameOverScreen,1);	
 	}
+
+	ctx.drawImage(assetManager.getAsset("img/ScoreBar.png"),278,546);
+	//set up the color, size, font and alignment of the text to be displayed
+	ctx.fillStyle="#000000";
+	ctx.font="28px Arial";
+	ctx.textAlign = "center";
+	//print the score text to the screen
+	ctx.fillText(currentScore,470,585);
 }		

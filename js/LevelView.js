@@ -1,5 +1,5 @@
 
-var correctImageCoordinates, timeLimit, currentScore, hud, difficultyManager,oddImageId,levelCoordinates,currentRobotId,oddAsset,lives;
+var correctImageCoordinates, timeLimit, currentScore, hud, difficultyManager,oddImageId,levelCoordinates,currentRobotId,oddAsset,lives,clickableObjects;
 
 function LevelView(){
 	soundManager.playMusic("sounds/bgm");
@@ -23,6 +23,7 @@ function createLevel(){
 	oddImageId = Math.round(Math.random()*(levelCoordinates.length-1));
 	oddAsset = difficultyManager.getOddAsset(currentRobotId);
 	animationEffect = 0;
+	setupClickableObjects();
 	animatedDraw();
 }
 
@@ -37,7 +38,26 @@ function redrawImages(){
 			drawImage(oddAsset,correctImageCoordinates[0],correctImageCoordinates[1]);
 		}
 		else{
-			drawImage(assetManager.getAsset("img/Robot"+currentRobotId+"Good.jpg"),coordinates[0],coordinates[1]);
+			drawImage(assetManager.getAsset("img/Robot"+currentRobotId+"Good.png"),coordinates[0],coordinates[1]);
+		}
+	}	
+}
+
+/*
+	Creates a list of clcikable objects for the level
+*/
+
+function setupClickableObjects(){
+	var coordinates;
+	clickableObjects = [];
+	clickableObjects.push(new ClickableObject("mute-button",785,-12,50,40));
+	for(var i = 0; i < levelCoordinates.length; i++){
+		coordinates = levelCoordinates[i];
+		if(i == oddImageId){
+			clickableObjects.push(new ClickableObject("correct-image",coordinates[0],coordinates[1],oddAsset.width,oddAsset.height));
+		}
+		else{
+			clickableObjects.push(new ClickableObject("wrong-image",coordinates[0],coordinates[1],oddAsset.width,oddAsset.height));
 		}
 	}	
 }
@@ -64,10 +84,9 @@ function animatedDraw()
 {
 	animationEffect += 0.1;
 	redrawImages();
-	if(animationEffect <= 1)
-	{
+	if(animationEffect <= 1){
 		setTimeout(animatedDraw,10);
-	}
+	}	
 }
 
 /*
@@ -76,43 +95,38 @@ function animatedDraw()
 function onGameClick(event){
 	var correctX = correctImageCoordinates[0];
 	var correctY = correctImageCoordinates[1];
-	var correctWidth = 100;
-	var correctHeight = 100;
-	var success = false;
+	var correctWidth = oddAsset.width;
+	var correctHeight = oddAsset.height;
 
 	var mouseX = event.offsetX? event.offsetX : event.layerX;
 	var mouseY = event.offsetY? event.offsetY : event.layerY;
 
-	var muteClicked = false;
-	if(mouseX >= 785 && mouseX <= 785+50){
-		if(mouseY >= -12 && mouseY <= -12 + 40){
 
-			soundManager.mute();
-			muteClicked = true;
+	for(var i = 0; i < clickableObjects.length; i++){
+		if(clickableObjects[i].isMouseOver(mouseX,mouseY)){
+			switch(clickableObjects[i].getID()){
+				case "correct-image":
+					soundManager.playSound("sounds/correct");
+					currentScore += 2 * Math.round(timeLimit);
+					difficultyManager.updateDifficulty(currentScore);//Updates the difficulty of the game
+					if(lives > 0){
+						createLevel();
+					}
+				break;
+				case "wrong-image":
+					soundManager.playSound("sounds/wrong");
+					lives-= 1;
+					if(lives > 0){
+						createLevel();
+					}
+				break;
+				case "mute-button":
+					soundManager.mute();
+				break;
+			}	
 			hud.updateHUD(currentScore,timeLimit,lives);
 		}
 	}
-	if(!muteClicked){
-		if(mouseX  >= correctX && mouseX <= correctX+correctWidth){
-			if(mouseY >= correctY && mouseY <= correctY + correctHeight){
-				success = true;
-			}
-		}
-		if(success){
-			soundManager.playSound("sounds/correct");
-			currentScore += 100;
-			difficultyManager.updateDifficulty(currentScore);//Updates the difficulty of the game
-		}
-		else{
-			soundManager.playSound("sounds/wrong");
-			lives-= 1;	
-		}
-		hud.updateHUD(currentScore,timeLimit,lives);
-		if(lives > 0){
-			createLevel();
-		}
-	}
-
 }
 
 /*

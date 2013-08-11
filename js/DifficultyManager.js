@@ -43,7 +43,7 @@ DifficultyManager.prototype.updateDifficulty = function(score){
 */
 DifficultyManager.prototype.getOddAsset = function(robotId){
 	
-	return assetManager.getAsset("img/Robot"+robotId+"Bad"+assetDifficulties[Math.round(Math.random()*(assetDifficulties.length-1))]+".jpg");
+	return assetManager.getAsset("img/Robot"+robotId+"Bad"+assetDifficulties[Math.round(Math.random()*(assetDifficulties.length-1))]+".png");
 }
 
 DifficultyManager.prototype.getTimeDecaySpeed = function(){

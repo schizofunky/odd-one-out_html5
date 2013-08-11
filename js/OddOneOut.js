@@ -1,7 +1,7 @@
 //create the global elements
 var assetManager = new AssetManager();
 var soundManager = new SoundManager();
-const numberOfRobots = 3;
+const numberOfRobots = 10;
 
 function init(){
 
@@ -31,10 +31,10 @@ function init(){
 	//all of the robot assets use the same naming structure allowing more to be added just by chnaging the counter value
 	for(var robotCounter = 1; robotCounter <= numberOfRobots; robotCounter++)
 	{
-		assetManager.addFileToLoad("img/Robot"+robotCounter+"Good.jpg");
-		assetManager.addFileToLoad("img/Robot"+robotCounter+"BadEasy.jpg");
-		assetManager.addFileToLoad("img/Robot"+robotCounter+"BadMedium.jpg");
-		assetManager.addFileToLoad("img/Robot"+robotCounter+"BadHard.jpg");	
+		assetManager.addFileToLoad("img/Robot"+robotCounter+"Good.png");
+		assetManager.addFileToLoad("img/Robot"+robotCounter+"BadEasy.png");
+		assetManager.addFileToLoad("img/Robot"+robotCounter+"BadMedium.png");
+		assetManager.addFileToLoad("img/Robot"+robotCounter+"BadHard.png");	
 	}	
 
 	//load all of the assets and call 'switchView' when complete

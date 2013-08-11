@@ -1,4 +1,4 @@
-var currentButtonId,clickCallback,overButton;
+var currentButtonId,clickCallback,overButton,clickableObjects;
 
 function OneButtonView(buttonId, onClickCallback){
 	overButton = false; //represents if the mouse is hovering over the image area
@@ -8,7 +8,10 @@ function OneButtonView(buttonId, onClickCallback){
 	//sets up the liteners for when the mouse moves and is clicked
 	c.onmousedown = onMouseClick;	
 	c.onmousemove = onMouseMove;
+	clickableObjects = [];
 	ctx.drawImage(assetManager.getAsset("img/Mute"+soundManager.getMuteStatus()+".png"),785,-12);
+	clickableObjects.push(new ClickableObject("mute-button",785,-12,50,40));
+	clickableObjects.push(new ClickableObject("menu-button",350,400,200,120));
 }
 
 
@@ -25,10 +28,14 @@ function onMouseMove(event){
 	//a flag representing if the mouse is currently over the button
 	var currentlyOver = false;
 
-	//classic rectangular collision detection
-	if(mouseX >= correctX && mouseX <= correctX+correctWidth){
-		if(mouseY >= correctY && mouseY <= correctY + correctHeight){
-			currentlyOver = true;
+
+	for(var i = 0; i < clickableObjects.length; i++){
+		if(clickableObjects[i].isMouseOver(mouseX,mouseY)){
+			switch(clickableObjects[i].getID()){
+				case "menu-button":
+					currentlyOver = true;
+				break;
+			}
 		}
 	}
 	//if the mouse position is over the button...
@@ -55,28 +62,30 @@ function onMouseMove(event){
 }
 
 function onMouseClick(event){
+	var mouseX = event.offsetX? event.offsetX : event.layerX;
+ 	var mouseY = event.offsetY? event.offsetY : event.layerY;
+
 	//check that the mouse is being clicked whilst hovering over the button
-	if(overButton){
-		//play a nice sfx for feedback
-		soundManager.playSound("sounds/button-click");
+	for(var i = 0; i < clickableObjects.length; i++){
+		if(clickableObjects[i].isMouseOver(mouseX,mouseY)){
+			switch(clickableObjects[i].getID()){
+				case "menu-button":
+					//play a nice sfx for feedback
+					soundManager.playSound("sounds/button-click");
 
-		//remove the mouse listeners
-		c.onmousedown = null;	
-		c.onmousemove = null;	
+					//remove the mouse listeners
+					c.onmousedown = null;	
+					c.onmousemove = null;	
 
-		//perform the callback function to whatever initiated this 
-		clickCallback();
-	}
-	else{
-		var mouseX = event.offsetX? event.offsetX : event.layerX;
-		var mouseY = event.offsetY? event.offsetY : event.layerY;
-		if(mouseX >= 785 && mouseX <= 785+50){
-		if(mouseY >= -12 && mouseY <= -12 + 40){
-
-			soundManager.mute();
-			ctx.drawImage(assetManager.getAsset("img/GameFrame.png"),0,0);
-			ctx.drawImage(assetManager.getAsset("img/Mute"+soundManager.getMuteStatus()+".png"),785,-12);
+					//perform the callback function to whatever initiated this 
+					clickCallback();
+				break;
+				case "mute-button":
+					soundManager.mute();
+					ctx.drawImage(assetManager.getAsset("img/GameFrame.png"),0,0);
+					ctx.drawImage(assetManager.getAsset("img/Mute"+soundManager.getMuteStatus()+".png"),785,-12);
+				break;
+			}
 		}
-	}
 	}
 }
